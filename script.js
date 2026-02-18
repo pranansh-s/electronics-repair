@@ -21,16 +21,26 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1. NAVBAR — Scroll Effect (transparent → solid)
   // ============================================
   const navbar = document.getElementById('navbar');
+  let lastScrollY = 0;
+  let ticking = false;
 
   const handleNavScroll = () => {
-    if (window.scrollY > 50) {
+    const scrollY = window.scrollY;
+    if (scrollY > 40) {
       navbar.classList.add('scrolled');
     } else {
       navbar.classList.remove('scrolled');
     }
+    lastScrollY = scrollY;
+    ticking = false;
   };
 
-  window.addEventListener('scroll', handleNavScroll, { passive: true });
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(handleNavScroll);
+      ticking = true;
+    }
+  }, { passive: true });
   handleNavScroll(); // Run once on load
 
   // ============================================
@@ -126,28 +136,34 @@ document.addEventListener('DOMContentLoaded', () => {
     el.classList.add('reveal');
   });
 
+  // Track which parent containers have already started their stagger cascade
+  const revealedParents = new WeakSet();
+
   const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry, index) => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        // Stagger the animation for sibling elements
         const parent = entry.target.parentElement;
-        const siblings = parent.querySelectorAll('.reveal');
-        let siblingIndex = 0;
 
-        siblings.forEach((sib, i) => {
-          if (sib === entry.target) siblingIndex = i;
-        });
-
-        setTimeout(() => {
+        // If this parent hasn't been triggered yet, stagger-reveal all its children
+        if (!revealedParents.has(parent)) {
+          revealedParents.add(parent);
+          const siblings = parent.querySelectorAll('.reveal:not(.revealed)');
+          siblings.forEach((sib, i) => {
+            setTimeout(() => {
+              sib.classList.add('revealed');
+            }, i * 120); // 120ms stagger for buttery cascade
+            revealObserver.unobserve(sib);
+          });
+        } else {
+          // Single element reveal (already part of a revealed parent)
           entry.target.classList.add('revealed');
-        }, siblingIndex * 100); // 100ms stagger
-
-        revealObserver.unobserve(entry.target);
+          revealObserver.unobserve(entry.target);
+        }
       }
     });
   }, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -40px 0px'
+    threshold: 0.08,
+    rootMargin: '0px 0px -60px 0px'
   });
 
   revealElements.forEach(el => revealObserver.observe(el));
@@ -160,15 +176,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const animateCount = (el) => {
     const target = parseInt(el.dataset.count, 10);
-    const duration = 2000; // 2 seconds
+    const duration = 2200; // slightly longer for smoother feel
     const startTime = performance.now();
 
     const step = (currentTime) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
 
-      // Ease out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
+      // Smooth ease-out quart for a more satisfying deceleration
+      const eased = 1 - Math.pow(1 - progress, 4);
       const currentValue = Math.floor(eased * target);
 
       el.textContent = currentValue;
@@ -205,15 +221,33 @@ document.addEventListener('DOMContentLoaded', () => {
   const showError = (inputId, errorId, message) => {
     const input = document.getElementById(inputId);
     const error = document.getElementById(errorId);
+    // Re-trigger shake animation by removing and re-adding the class
+    input.classList.remove('error');
+    void input.offsetWidth; // force reflow to restart animation
     input.classList.add('error');
     error.textContent = message;
+    error.style.opacity = '0';
+    error.style.transform = 'translateY(-4px)';
+    requestAnimationFrame(() => {
+      error.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      error.style.opacity = '1';
+      error.style.transform = 'translateY(0)';
+    });
   };
 
   const clearError = (inputId, errorId) => {
     const input = document.getElementById(inputId);
     const error = document.getElementById(errorId);
     input.classList.remove('error');
-    error.textContent = '';
+    error.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+    error.style.opacity = '0';
+    error.style.transform = 'translateY(-4px)';
+    setTimeout(() => {
+      error.textContent = '';
+      error.style.opacity = '';
+      error.style.transform = '';
+      error.style.transition = '';
+    }, 200);
   };
 
   // Real-time validation — clear errors as user types
