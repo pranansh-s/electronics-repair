@@ -80,63 +80,118 @@
       </div>
 
       <div class="hero__visual">
-        <div class="hero__illustration">
-          <svg viewBox="0 0 500 420" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- AC Unit body -->
-            <rect x="100" y="60" width="300" height="180" rx="20" fill="#E8EDF5" stroke="#0A1F44" stroke-width="3" />
-            <rect x="120" y="80" width="260" height="100" rx="8" fill="#F4F6F9" />
-            <!-- Vent lines -->
-            <line x1="140" y1="95" x2="360" y2="95" stroke="#C5CDE0" stroke-width="2" />
-            <line x1="140" y1="110" x2="360" y2="110" stroke="#C5CDE0" stroke-width="2" />
-            <line x1="140" y1="125" x2="360" y2="125" stroke="#C5CDE0" stroke-width="2" />
-            <line x1="140" y1="140" x2="360" y2="140" stroke="#C5CDE0" stroke-width="2" />
-            <line x1="140" y1="155" x2="360" y2="155" stroke="#C5CDE0" stroke-width="2" />
-            <line x1="140" y1="170" x2="360" y2="170" stroke="#C5CDE0" stroke-width="2" />
-            <!-- Display panel -->
-            <rect x="140" y="195" width="80" height="30" rx="6" fill="#0A1F44" />
-            <text x="157" y="215" fill="#2563EB" font-size="14" font-family="Inter" font-weight="700">24°C</text>
-            <!-- LED indicator -->
-            <circle cx="350" cy="210" r="6" fill="#2563EB">
-              <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite" />
-            </circle>
-            <!-- Cool air waves -->
-            <path d="M130 270 Q170 255 210 270 Q250 285 290 270" stroke="#2563EB" stroke-width="2.5" fill="none"
-              opacity="0.5">
-              <animate attributeName="d"
-                values="M130 270 Q170 255 210 270 Q250 285 290 270;M130 275 Q170 260 210 275 Q250 290 290 275;M130 270 Q170 255 210 270 Q250 285 290 270"
-                dur="3s" repeatCount="indefinite" />
-            </path>
-            <path d="M160 285 Q200 270 240 285 Q280 300 320 285" stroke="#2563EB" stroke-width="2" fill="none"
-              opacity="0.35">
-              <animate attributeName="d"
-                values="M160 285 Q200 270 240 285 Q280 300 320 285;M160 290 Q200 275 240 290 Q280 305 320 290;M160 285 Q200 270 240 285 Q280 300 320 285"
-                dur="3.5s" repeatCount="indefinite" />
-            </path>
-            <path d="M190 300 Q230 285 270 300 Q310 315 350 300" stroke="#2563EB" stroke-width="1.5" fill="none"
-              opacity="0.2">
-              <animate attributeName="d"
-                values="M190 300 Q230 285 270 300 Q310 315 350 300;M190 305 Q230 290 270 305 Q310 320 350 305;M190 300 Q230 285 270 300 Q310 315 350 300"
-                dur="4s" repeatCount="indefinite" />
-            </path>
-            <!-- Wrench / tool icon -->
-            <g transform="translate(340, 310) rotate(-30)">
-              <rect x="0" y="0" width="12" height="55" rx="4" fill="#0A1F44" />
-              <circle cx="6" cy="65" r="14" fill="none" stroke="#0A1F44" stroke-width="5" />
-              <circle cx="6" cy="65" r="6" fill="#F4F6F9" />
-            </g>
-            <!-- Screwdriver -->
-            <g transform="translate(370, 320) rotate(15)">
-              <rect x="4" y="0" width="6" height="50" rx="2" fill="#2563EB" />
-              <rect x="0" y="45" width="14" height="20" rx="3" fill="#0A1F44" />
-            </g>
-            <!-- Snowflake -->
-            <g transform="translate(250, 320)" opacity="0.6">
-              <line x1="0" y1="-18" x2="0" y2="18" stroke="#2563EB" stroke-width="2.5" />
-              <line x1="-16" y1="-9" x2="16" y2="9" stroke="#2563EB" stroke-width="2.5" />
-              <line x1="-16" y1="9" x2="16" y2="-9" stroke="#2563EB" stroke-width="2.5" />
-              <circle cx="0" cy="0" r="4" fill="#2563EB" />
-            </g>
-          </svg>
+        <div class="hero__morph-container">
+          <!-- Glowing pulse ring -->
+          <div class="hero__morph-ring"></div>
+          <div class="hero__morph-ring hero__morph-ring--delayed"></div>
+
+          <!-- Icon carousel — 4 icons cycling every 3s (12s total loop) -->
+          <div class="hero__morph-icons">
+
+            <!-- Icon 1: AC Unit -->
+            <div class="hero__morph-icon hero__morph-icon--1">
+              <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="15" y="25" width="90" height="50" rx="8" stroke="currentColor" stroke-width="3" />
+                <line x1="30" y1="40" x2="90" y2="40" stroke="currentColor" stroke-width="2" opacity="0.6" />
+                <line x1="30" y1="48" x2="90" y2="48" stroke="currentColor" stroke-width="2" opacity="0.6" />
+                <line x1="30" y1="56" x2="90" y2="56" stroke="currentColor" stroke-width="2" opacity="0.6" />
+                <line x1="30" y1="64" x2="90" y2="64" stroke="currentColor" stroke-width="2" opacity="0.6" />
+                <!-- Cool air waves -->
+                <path d="M35 85 Q50 78 65 85 Q80 92 95 85" stroke="currentColor" stroke-width="2.5" fill="none"
+                  opacity="0.5">
+                  <animate attributeName="d"
+                    values="M35 85 Q50 78 65 85 Q80 92 95 85;M35 88 Q50 81 65 88 Q80 95 95 88;M35 85 Q50 78 65 85 Q80 92 95 85"
+                    dur="2.5s" repeatCount="indefinite" />
+                </path>
+                <path d="M40 93 Q55 86 70 93 Q85 100 100 93" stroke="currentColor" stroke-width="2" fill="none"
+                  opacity="0.3">
+                  <animate attributeName="d"
+                    values="M40 93 Q55 86 70 93 Q85 100 100 93;M40 96 Q55 89 70 96 Q85 103 100 96;M40 93 Q55 86 70 93 Q85 100 100 93"
+                    dur="3s" repeatCount="indefinite" />
+                </path>
+                <!-- LED -->
+                <circle cx="85" cy="32" r="3" fill="currentColor" opacity="0.8">
+                  <animate attributeName="opacity" values="0.8;0.2;0.8" dur="2s" repeatCount="indefinite" />
+                </circle>
+              </svg>
+            </div>
+
+            <!-- Icon 2: TV / Display -->
+            <div class="hero__morph-icon hero__morph-icon--2">
+              <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="12" y="20" width="96" height="60" rx="6" stroke="currentColor" stroke-width="3" />
+                <rect x="18" y="26" width="84" height="48" rx="3" stroke="currentColor" stroke-width="1.5"
+                  opacity="0.3" />
+                <!-- Play button -->
+                <polygon points="52,42 52,58 68,50" fill="currentColor" opacity="0.4" />
+                <!-- Stand -->
+                <path d="M45 84h30M60 80v4" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+                <!-- Signal waves -->
+                <path d="M88 28 Q95 22 102 28" stroke="currentColor" stroke-width="2" fill="none" opacity="0.4" />
+                <path d="M91 24 Q95 20 99 24" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.3" />
+              </svg>
+            </div>
+
+            <!-- Icon 3: Fridge / Refrigerator -->
+            <div class="hero__morph-icon hero__morph-icon--3">
+              <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="30" y="10" width="60" height="100" rx="8" stroke="currentColor" stroke-width="3" />
+                <line x1="30" y1="48" x2="90" y2="48" stroke="currentColor" stroke-width="2.5" />
+                <!-- Freezer handle -->
+                <rect x="76" y="24" width="4" height="14" rx="2" fill="currentColor" opacity="0.6" />
+                <!-- Fridge handle -->
+                <rect x="76" y="58" width="4" height="18" rx="2" fill="currentColor" opacity="0.6" />
+                <!-- Snowflake in freezer -->
+                <g transform="translate(52, 30)" opacity="0.5">
+                  <line x1="0" y1="-7" x2="0" y2="7" stroke="currentColor" stroke-width="2" />
+                  <line x1="-6" y1="-3.5" x2="6" y2="3.5" stroke="currentColor" stroke-width="2" />
+                  <line x1="-6" y1="3.5" x2="6" y2="-3.5" stroke="currentColor" stroke-width="2" />
+                </g>
+                <!-- Temperature indicator -->
+                <circle cx="52" cy="72" r="6" stroke="currentColor" stroke-width="1.5" opacity="0.4" />
+                <line x1="52" y1="69" x2="52" y2="72" stroke="currentColor" stroke-width="1.5" opacity="0.4" />
+              </svg>
+            </div>
+
+            <!-- Icon 4: Washing Machine -->
+            <div class="hero__morph-icon hero__morph-icon--4">
+              <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="22" y="12" width="76" height="96" rx="8" stroke="currentColor" stroke-width="3" />
+                <!-- Control panel -->
+                <circle cx="38" cy="28" r="4" fill="currentColor" opacity="0.4" />
+                <circle cx="50" cy="28" r="4" fill="currentColor" opacity="0.4" />
+                <line x1="62" y1="28" x2="86" y2="28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                  opacity="0.4" />
+                <!-- Door circle -->
+                <circle cx="60" cy="68" r="24" stroke="currentColor" stroke-width="2.5" />
+                <!-- Inner drum with spin animation -->
+                <circle cx="60" cy="68" r="14" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 4"
+                  opacity="0.5">
+                  <animateTransform attributeName="transform" type="rotate" values="0 60 68;360 60 68" dur="3s"
+                    repeatCount="indefinite" />
+                </circle>
+                <!-- Water swirl -->
+                <path d="M50 68 Q55 60 60 68 Q65 76 70 68" stroke="currentColor" stroke-width="1.5" fill="none"
+                  opacity="0.3">
+                  <animate attributeName="d"
+                    values="M50 68 Q55 60 60 68 Q65 76 70 68;M50 68 Q55 76 60 68 Q65 60 70 68;M50 68 Q55 60 60 68 Q65 76 70 68"
+                    dur="2s" repeatCount="indefinite" />
+                </path>
+              </svg>
+            </div>
+
+          </div>
+
+          <!-- Service name label cycling -->
+          <div class="hero__morph-labels">
+            <span class="hero__morph-label hero__morph-label--1">AC Repair</span>
+            <span class="hero__morph-label hero__morph-label--2">TV & Display</span>
+            <span class="hero__morph-label hero__morph-label--3">Fridge Repair</span>
+            <span class="hero__morph-label hero__morph-label--4">Washing Machine</span>
+          </div>
+
+          <!-- "We Fix Everything" subtitle -->
+          <p class="hero__morph-subtitle">Your One-Stop Repair Shop</p>
         </div>
       </div>
     </div>

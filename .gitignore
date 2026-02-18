@@ -1,0 +1,26 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py
+*.pyc
+
+# Node (if added later)
+node_modules/
+npm-debug.log*
+
+# Gemini / Agent files
+.gemini/

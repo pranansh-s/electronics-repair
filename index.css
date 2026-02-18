@@ -672,10 +672,15 @@ button {
     align-items: center;
 }
 
-.hero__illustration {
-    width: 100%;
-    max-width: 480px;
-    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.2));
+/* ---- Morphing Service Icons ---- */
+.hero__morph-container {
+    position: relative;
+    width: 320px;
+    height: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     animation: heroFloat 6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
     will-change: transform;
 }
@@ -697,6 +702,224 @@ button {
 
     75% {
         transform: translateY(-10px) rotate(-0.5deg);
+    }
+}
+
+/* Pulsing glow rings behind the icon */
+.hero__morph-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 240px;
+    height: 240px;
+    margin-top: -40px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 2px solid rgba(59, 130, 246, 0.25);
+    animation: morphPulse 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    pointer-events: none;
+}
+
+.hero__morph-ring--delayed {
+    width: 200px;
+    height: 200px;
+    border-color: rgba(59, 130, 246, 0.15);
+    animation-delay: 1.5s;
+}
+
+@keyframes morphPulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.3);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.15);
+        opacity: 0.3;
+        box-shadow: 0 0 30px 8px rgba(59, 130, 246, 0.1);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.3);
+    }
+}
+
+/* Icon stage — stacked absolutely */
+.hero__morph-icons {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    flex-shrink: 0;
+}
+
+.hero__morph-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.9);
+    opacity: 0;
+    transform: scale(0.7) rotate(-8deg);
+    animation: morphCycle 12s var(--ease-butter) infinite;
+    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.3));
+}
+
+.hero__morph-icon svg {
+    width: 160px;
+    height: 160px;
+}
+
+/* Staggered delays — each icon gets 3s of the 12s cycle */
+.hero__morph-icon--1 {
+    animation-delay: 0s;
+}
+
+.hero__morph-icon--2 {
+    animation-delay: 3s;
+}
+
+.hero__morph-icon--3 {
+    animation-delay: 6s;
+}
+
+.hero__morph-icon--4 {
+    animation-delay: 9s;
+}
+
+/*
+   12s total cycle, each icon visible for ~3s:
+   0%   = start fade in
+   4%   = fully visible
+   21%  = still visible
+   25%  = faded out
+   25%-100% = stay hidden
+*/
+@keyframes morphCycle {
+    0% {
+        opacity: 0;
+        transform: scale(0.7) rotate(-8deg);
+    }
+
+    4% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+
+    21% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+
+    25% {
+        opacity: 0;
+        transform: scale(0.7) rotate(8deg);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0.7) rotate(8deg);
+    }
+}
+
+/* Service name labels — cycling in sync */
+.hero__morph-labels {
+    position: relative;
+    height: 36px;
+    margin-top: var(--sp-6);
+    overflow: hidden;
+}
+
+.hero__morph-label {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    white-space: nowrap;
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-bold);
+    color: var(--clr-white);
+    opacity: 0;
+    animation: labelCycle 12s var(--ease-butter) infinite;
+    letter-spacing: -0.01em;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.hero__morph-label--1 {
+    animation-delay: 0s;
+}
+
+.hero__morph-label--2 {
+    animation-delay: 3s;
+}
+
+.hero__morph-label--3 {
+    animation-delay: 6s;
+}
+
+.hero__morph-label--4 {
+    animation-delay: 9s;
+}
+
+@keyframes labelCycle {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+
+    4% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    21% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    25% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+}
+
+/* "One-Stop Repair Shop" subtitle */
+.hero__morph-subtitle {
+    margin-top: var(--sp-4);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: rgba(255, 255, 255, 0.45);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+/* ---- Reduced Motion ---- */
+@media (prefers-reduced-motion: reduce) {
+
+    .hero__morph-icon,
+    .hero__morph-label {
+        animation: none;
+    }
+
+    .hero__morph-icon--1,
+    .hero__morph-label--1 {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+
+    .hero__morph-ring {
+        animation: none;
+    }
+
+    .hero__morph-container {
+        animation: none;
     }
 }
 
@@ -1653,9 +1876,25 @@ a.footer__link:hover {
         justify-content: center;
     }
 
-    .hero__illustration {
-        max-width: 360px;
+    .hero__morph-container {
+        width: 260px;
+        height: 320px;
         margin: 0 auto;
+    }
+
+    .hero__morph-icon svg {
+        width: 130px;
+        height: 130px;
+    }
+
+    .hero__morph-ring {
+        width: 200px;
+        height: 200px;
+    }
+
+    .hero__morph-ring--delayed {
+        width: 160px;
+        height: 160px;
     }
 
     /* Steps */
@@ -1756,7 +1995,7 @@ a.footer__link:hover {
         transform: none;
     }
 
-    .hero__illustration {
+    .hero__morph-container {
         animation: none;
     }
 }
