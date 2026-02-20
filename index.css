@@ -1,5 +1,5 @@
 /* ============================================
-   [Business Name] — Landing Page Styles
+   Patna AC Services and Repair — Landing Page Styles
    AC, Cooler, Washing Machine, Fridge & Electronics Repair
    ============================================
    
@@ -182,8 +182,13 @@ body {
     color: var(--clr-gray-800);
     background-color: var(--clr-white);
     overflow-x: hidden;
-    /* Smooth page entrance */
     animation: pageEntrance 0.8s var(--ease-butter) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body {
+        animation: none;
+    }
 }
 
 @keyframes pageEntrance {
@@ -447,6 +452,33 @@ button {
     width: 36px;
     height: 36px;
     flex-shrink: 0;
+}
+
+/* SVG logo — no background, transparent cutout */
+.navbar__logo-img {
+    height: 52px;
+    width: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+    /* On dark hero bg: brighten so navy text becomes white/light */
+    filter: brightness(0) invert(1) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
+    transition: filter var(--dur-normal) var(--ease-butter),
+        height var(--dur-normal) var(--ease-butter);
+}
+
+/* Once navbar is scrolled (white bg) — restore natural SVG colours */
+.navbar.scrolled .navbar__logo-img {
+    filter: none;
+    height: 48px;
+}
+
+/* Footer: show logo in natural colours with a light glow so it reads on dark bg */
+.footer__logo-img {
+    height: 52px;
+    width: auto;
+    object-fit: contain;
+    /* Lighten slightly so navy doesn't vanish on dark footer */
+    filter: brightness(0) invert(1) opacity(0.92);
 }
 
 .navbar__nav {

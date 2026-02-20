@@ -1,336 +1,217 @@
-/**
- * ============================================
- * [Business Name] — Landing Page Script
- * AC, Cooler & Electronics Repair
- * ============================================
- * 
- * Features:
- * - Sticky navbar with scroll effect
- * - Mobile hamburger menu
- * - Smooth scroll navigation
- * - Section fade-in animations (Intersection Observer)
- * - Animated stat counters
- * - Contact form validation
- * - Toast notification
- * - Active nav link highlighting
- */
+// Patna AC Services — Landing Page Script
+// Handles: sticky nav, mobile menu, smooth scroll,
+// active nav highlighting, scroll reveals, stat counters,
+// contact form validation, and keyboard accessibility.
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ============================================
-  // 1. NAVBAR — Scroll Effect (transparent → solid)
-  // ============================================
   const navbar = document.getElementById('navbar');
-  let lastScrollY = 0;
-  let ticking = false;
-
-  const handleNavScroll = () => {
-    const scrollY = window.scrollY;
-    if (scrollY > 40) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
-    lastScrollY = scrollY;
-    ticking = false;
-  };
-
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(handleNavScroll);
-      ticking = true;
-    }
-  }, { passive: true });
-  handleNavScroll(); // Run once on load
-
-  // ============================================
-  // 2. MOBILE HAMBURGER MENU
-  // ============================================
   const hamburger = document.getElementById('hamburger');
   const navMenu = document.getElementById('navMenu');
-
-  hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('open');
-    document.body.style.overflow = navMenu.classList.contains('open') ? 'hidden' : '';
-  });
-
-  // Close mobile menu when a link is clicked
-  navMenu.querySelectorAll('.navbar__link').forEach(link => {
-    link.addEventListener('click', () => {
-      hamburger.classList.remove('active');
-      navMenu.classList.remove('open');
-      document.body.style.overflow = '';
-    });
-  });
-
-  // Close when clicking overlay area
-  navMenu.addEventListener('click', (e) => {
-    if (e.target === navMenu) {
-      hamburger.classList.remove('active');
-      navMenu.classList.remove('open');
-      document.body.style.overflow = '';
-    }
-  });
-
-  // ============================================
-  // 3. SMOOTH SCROLL for anchor links
-  // ============================================
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', (e) => {
-      const targetId = anchor.getAttribute('href');
-      if (targetId === '#') return;
-
-      const target = document.querySelector(targetId);
-      if (target) {
-        e.preventDefault();
-        const navHeight = navbar.offsetHeight;
-        const targetTop = target.getBoundingClientRect().top + window.scrollY - navHeight - 20;
-
-        window.scrollTo({
-          top: targetTop,
-          behavior: 'smooth'
-        });
-      }
-    });
-  });
-
-  // ============================================
-  // 4. ACTIVE NAV LINK HIGHLIGHTING on scroll
-  // ============================================
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.navbar__link');
-
-  const highlightNav = () => {
-    const scrollY = window.scrollY + navbar.offsetHeight + 100;
-
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop;
-      const sectionHeight = section.offsetHeight;
-      const sectionId = section.getAttribute('id');
-
-      if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
-        navLinks.forEach(link => {
-          link.classList.remove('active');
-          if (link.getAttribute('href') === `#${sectionId}`) {
-            link.classList.add('active');
-          }
-        });
-      }
-    });
-  };
-
-  window.addEventListener('scroll', highlightNav, { passive: true });
-
-  // ============================================
-  // 5. SCROLL REVEAL ANIMATIONS
-  // ============================================
-  const revealElements = document.querySelectorAll(
-    '.service-card, .feature-block, .step, .testimonial-card, ' +
-    '.section-header, .hero__content, .hero__visual, ' +
-    '.stats-card, .contact__form-wrap, .contact__info'
-  );
-
-  // Add the reveal class to all target elements
-  revealElements.forEach(el => {
-    el.classList.add('reveal');
-  });
-
-  // Track which parent containers have already started their stagger cascade
-  const revealedParents = new WeakSet();
-
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const parent = entry.target.parentElement;
-
-        // If this parent hasn't been triggered yet, stagger-reveal all its children
-        if (!revealedParents.has(parent)) {
-          revealedParents.add(parent);
-          const siblings = parent.querySelectorAll('.reveal:not(.revealed)');
-          siblings.forEach((sib, i) => {
-            setTimeout(() => {
-              sib.classList.add('revealed');
-            }, i * 120); // 120ms stagger for buttery cascade
-            revealObserver.unobserve(sib);
-          });
-        } else {
-          // Single element reveal (already part of a revealed parent)
-          entry.target.classList.add('revealed');
-          revealObserver.unobserve(entry.target);
-        }
-      }
-    });
-  }, {
-    threshold: 0.08,
-    rootMargin: '0px 0px -60px 0px'
-  });
-
-  revealElements.forEach(el => revealObserver.observe(el));
-
-  // ============================================
-  // 6. ANIMATED STAT COUNTERS
-  // ============================================
-  const statNumbers = document.querySelectorAll('.stats-card__number[data-count]');
-  let statsCounted = false;
-
-  const animateCount = (el) => {
-    const target = parseInt(el.dataset.count, 10);
-    const duration = 2200; // slightly longer for smoother feel
-    const startTime = performance.now();
-
-    const step = (currentTime) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-
-      // Smooth ease-out quart for a more satisfying deceleration
-      const eased = 1 - Math.pow(1 - progress, 4);
-      const currentValue = Math.floor(eased * target);
-
-      el.textContent = currentValue;
-
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      } else {
-        el.textContent = target;
-      }
-    };
-
-    requestAnimationFrame(step);
-  };
-
-  const statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !statsCounted) {
-        statsCounted = true;
-        statNumbers.forEach(num => animateCount(num));
-        statsObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.3 });
-
-  const statsCard = document.querySelector('.stats-card');
-  if (statsCard) statsObserver.observe(statsCard);
-
-  // ============================================
-  // 7. CONTACT FORM VALIDATION
-  // ============================================
   const contactForm = document.getElementById('contactForm');
   const toast = document.getElementById('toast');
 
-  const showError = (inputId, errorId, message) => {
-    const input = document.getElementById(inputId);
-    const error = document.getElementById(errorId);
-    // Re-trigger shake animation by removing and re-adding the class
-    input.classList.remove('error');
-    void input.offsetWidth; // force reflow to restart animation
-    input.classList.add('error');
-    error.textContent = message;
-    error.style.opacity = '0';
-    error.style.transform = 'translateY(-4px)';
-    requestAnimationFrame(() => {
-      error.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-      error.style.opacity = '1';
-      error.style.transform = 'translateY(0)';
+  // --- Sticky navbar (transparent → frosted glass on scroll) ---
+  let ticking = false;
+
+  function updateNavbar() {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(updateNavbar);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  updateNavbar(); // run once on load
+
+
+  // --- Mobile hamburger menu ---
+  function closeMenu() {
+    hamburger.classList.remove('active');
+    navMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  hamburger.addEventListener('click', () => {
+    const isOpen = navMenu.classList.toggle('open');
+    hamburger.classList.toggle('active', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+
+  // Close when a nav link is clicked
+  navMenu.querySelectorAll('.navbar__link').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  // Close when tapping the overlay area
+  navMenu.addEventListener('click', e => {
+    if (e.target === navMenu) closeMenu();
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && navMenu.classList.contains('open')) closeMenu();
+  });
+
+
+  // --- Smooth scroll for anchor links ---
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', e => {
+      const id = anchor.getAttribute('href');
+      if (id === '#') return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      const offset = target.getBoundingClientRect().top + window.scrollY - navbar.offsetHeight - 20;
+      window.scrollTo({ top: offset, behavior: 'smooth' });
     });
-  };
+  });
 
-  const clearError = (inputId, errorId) => {
+
+  // --- Active nav link highlighting on scroll ---
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.navbar__link');
+
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY + navbar.offsetHeight + 100;
+    sections.forEach(section => {
+      const isActive = scrollY >= section.offsetTop && scrollY < section.offsetTop + section.offsetHeight;
+      const link = navMenu.querySelector(`a[href="#${section.id}"]`);
+      if (link) link.classList.toggle('active', isActive);
+    });
+  }, { passive: true });
+
+
+  // --- Scroll reveal animations (staggered per container) ---
+  const revealSelector = [
+    '.service-card', '.feature-block', '.step', '.testimonial-card',
+    '.section-header', '.hero__content', '.hero__visual',
+    '.stats-card', '.contact__form-wrap', '.contact__info'
+  ].join(', ');
+
+  const revealItems = document.querySelectorAll(revealSelector);
+  revealItems.forEach(el => el.classList.add('reveal'));
+
+  const triggeredParents = new WeakSet();
+
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const parent = entry.target.parentElement;
+
+      if (!triggeredParents.has(parent)) {
+        triggeredParents.add(parent);
+        parent.querySelectorAll('.reveal:not(.revealed)').forEach((el, i) => {
+          setTimeout(() => el.classList.add('revealed'), i * 120);
+          revealObserver.unobserve(el);
+        });
+      } else {
+        entry.target.classList.add('revealed');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+
+  revealItems.forEach(el => revealObserver.observe(el));
+
+
+  // --- Animated stat counters ---
+  const statNumbers = document.querySelectorAll('.stats-card__number[data-count]');
+  let statsDone = false;
+
+  function countUp(el) {
+    const target = parseInt(el.dataset.count, 10);
+    const duration = 2000;
+    const start = performance.now();
+
+    function step(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4); // ease-out quart
+      el.textContent = Math.floor(eased * target);
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(step);
+  }
+
+  const statsCard = document.querySelector('.stats-card');
+  if (statsCard) {
+    new IntersectionObserver((entries, obs) => {
+      if (entries[0].isIntersecting && !statsDone) {
+        statsDone = true;
+        statNumbers.forEach(countUp);
+        obs.disconnect();
+      }
+    }, { threshold: 0.3 }).observe(statsCard);
+  }
+
+
+  // --- Contact form validation ---
+  function showError(inputId, errorId, msg) {
     const input = document.getElementById(inputId);
-    const error = document.getElementById(errorId);
+    const errEl = document.getElementById(errorId);
     input.classList.remove('error');
-    error.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
-    error.style.opacity = '0';
-    error.style.transform = 'translateY(-4px)';
-    setTimeout(() => {
-      error.textContent = '';
-      error.style.opacity = '';
-      error.style.transform = '';
-      error.style.transition = '';
-    }, 200);
-  };
+    void input.offsetWidth; // force reflow to restart shake animation
+    input.classList.add('error');
+    errEl.textContent = msg;
+  }
 
-  // Real-time validation — clear errors as user types
-  ['name', 'phone', 'service'].forEach(fieldId => {
-    const input = document.getElementById(fieldId);
-    if (input) {
-      input.addEventListener('input', () => {
-        clearError(fieldId, `${fieldId}Error`);
-      });
-      input.addEventListener('change', () => {
-        clearError(fieldId, `${fieldId}Error`);
-      });
+  function clearError(inputId, errorId) {
+    document.getElementById(inputId).classList.remove('error');
+    document.getElementById(errorId).textContent = '';
+  }
+
+  ['name', 'phone', 'service'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', () => clearError(id, `${id}Error`));
+      el.addEventListener('change', () => clearError(id, `${id}Error`));
     }
   });
 
-  contactForm.addEventListener('submit', (e) => {
+  contactForm.addEventListener('submit', e => {
     e.preventDefault();
-    let isValid = true;
+    let valid = true;
 
-    // Name validation
     const name = document.getElementById('name').value.trim();
-    if (!name) {
-      showError('name', 'nameError', 'Please enter your name');
-      isValid = false;
-    } else if (name.length < 2) {
-      showError('name', 'nameError', 'Name must be at least 2 characters');
-      isValid = false;
-    } else {
-      clearError('name', 'nameError');
-    }
+    if (!name || name.length < 2) {
+      showError('name', 'nameError', name ? 'Name must be at least 2 characters' : 'Please enter your name');
+      valid = false;
+    } else clearError('name', 'nameError');
 
-    // Phone validation
     const phone = document.getElementById('phone').value.trim();
     if (!phone) {
       showError('phone', 'phoneError', 'Please enter your phone number');
-      isValid = false;
+      valid = false;
     } else if (!/^[+]?[\d\s\-()]{7,15}$/.test(phone)) {
       showError('phone', 'phoneError', 'Please enter a valid phone number');
-      isValid = false;
-    } else {
-      clearError('phone', 'phoneError');
-    }
+      valid = false;
+    } else clearError('phone', 'phoneError');
 
-    // Service validation
     const service = document.getElementById('service').value;
     if (!service) {
       showError('service', 'serviceError', 'Please select a service');
-      isValid = false;
-    } else {
-      clearError('service', 'serviceError');
-    }
+      valid = false;
+    } else clearError('service', 'serviceError');
 
-    if (isValid) {
-      // Show success toast
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 4000);
+    if (!valid) return;
 
-      // Reset form
-      contactForm.reset();
+    // Success
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+    contactForm.reset();
 
-      // Animate submit button
-      const submitBtn = document.getElementById('submitBtn');
-      submitBtn.textContent = '✓ Submitted!';
-      submitBtn.style.background = '#10B981';
-      submitBtn.style.borderColor = '#10B981';
-
-      setTimeout(() => {
-        submitBtn.innerHTML = 'Get a Free Quote <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
-        submitBtn.style.background = '';
-        submitBtn.style.borderColor = '';
-      }, 3000);
-    }
-  });
-
-  // ============================================
-  // 8. KEYBOARD ACCESSIBILITY — ESC to close menu
-  // ============================================
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && navMenu.classList.contains('open')) {
-      hamburger.classList.remove('active');
-      navMenu.classList.remove('open');
-      document.body.style.overflow = '';
-    }
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = '✓ Submitted!';
+    btn.style.cssText = 'background:#10B981; border-color:#10B981;';
+    setTimeout(() => {
+      btn.innerHTML = 'Get a Free Quote <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+      btn.style.cssText = '';
+    }, 3000);
   });
 
 });
