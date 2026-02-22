@@ -442,6 +442,20 @@ button {
     color: var(--clr-white);
     transition: color var(--dur-normal) ease;
     z-index: 10;
+    /* Entry animation */
+    animation: logoEntrance 0.7s var(--ease-spring) 0.2s both;
+}
+
+@keyframes logoEntrance {
+    from {
+        opacity: 0;
+        transform: translateX(-18px) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
 }
 
 .navbar.scrolled .navbar__logo {
@@ -463,13 +477,41 @@ button {
     /* On dark hero bg: brighten so navy text becomes white/light */
     filter: brightness(0) invert(1) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
     transition: filter var(--dur-normal) var(--ease-butter),
-        height var(--dur-normal) var(--ease-butter);
+        height var(--dur-normal) var(--ease-butter),
+        transform 0.35s var(--ease-spring);
+    /* Gentle continuous breathing/floating animation */
+    animation: logoBreathe 4s var(--ease-smooth) infinite;
+    will-change: transform;
+}
+
+@keyframes logoBreathe {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-3px) scale(1.03);
+    }
+}
+
+/* Hover: lift + glow */
+.navbar__logo:hover .navbar__logo-img {
+    transform: translateY(-4px) scale(1.08) rotate(-2deg);
+    animation-play-state: paused;
+    filter: brightness(0) invert(1) drop-shadow(0 4px 16px rgba(96, 165, 250, 0.7)) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
 }
 
 /* Once navbar is scrolled (white bg) — restore natural SVG colours */
 .navbar.scrolled .navbar__logo-img {
     filter: none;
     height: 48px;
+}
+
+.navbar.scrolled .navbar__logo:hover .navbar__logo-img {
+    filter: drop-shadow(0 4px 16px rgba(37, 99, 235, 0.45));
+    transform: translateY(-4px) scale(1.08) rotate(-2deg);
 }
 
 /* Footer: show logo in natural colours with a light glow so it reads on dark bg */
@@ -479,6 +521,29 @@ button {
     object-fit: contain;
     /* Lighten slightly so navy doesn't vanish on dark footer */
     filter: brightness(0) invert(1) opacity(0.92);
+    transition: transform 0.35s var(--ease-spring),
+        filter 0.35s var(--ease-butter);
+    /* Subtle float matching brand feel */
+    animation: logoBreathe 5s var(--ease-smooth) infinite;
+    will-change: transform;
+}
+
+.footer__logo:hover .footer__logo-img {
+    transform: translateY(-5px) scale(1.1) rotate(2deg);
+    animation-play-state: paused;
+    filter: brightness(0) invert(1) opacity(0.92) drop-shadow(0 6px 18px rgba(96, 165, 250, 0.55));
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .navbar__logo-img,
+    .footer__logo-img {
+        animation: none;
+    }
+
+    .navbar__logo {
+        animation: none;
+    }
 }
 
 .navbar__nav {

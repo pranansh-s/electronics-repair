@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://patnaacserviceandrepair.online/sitemap.xml
+
+# Host preference
+Host: https://patnaacserviceandrepair.online

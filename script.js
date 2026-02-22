@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  contactForm.addEventListener('submit', e => {
+  contactForm.addEventListener('submit', async e => {
     e.preventDefault();
     let valid = true;
 
@@ -200,18 +200,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!valid) return;
 
-    // Success
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 4000);
-    contactForm.reset();
-
+    // --- Submit to Web3Forms ---
     const btn = document.getElementById('submitBtn');
-    btn.textContent = '✓ Submitted!';
-    btn.style.cssText = 'background:#10B981; border-color:#10B981;';
-    setTimeout(() => {
-      btn.innerHTML = 'Get a Free Quote <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    const formData = new FormData(contactForm);
+    const data = Object.fromEntries(formData.entries());
+    // Also capture the optional message field
+    data.message = document.getElementById('message').value.trim() || '(no message)';
+    data.service = service;
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const json = await res.json();
+
+      if (res.ok && json.success) {
+        // Success
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 4000);
+        contactForm.reset();
+        btn.innerHTML = '✓ Submitted!';
+        btn.style.cssText = 'background:#10B981; border-color:#10B981;';
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.style.cssText = '';
+          btn.disabled = false;
+        }, 3000);
+      } else {
+        throw new Error(json.message || 'Submission failed');
+      }
+    } catch (err) {
+      btn.innerHTML = originalHTML;
       btn.style.cssText = '';
-    }, 3000);
+      btn.disabled = false;
+      // Show a friendly error below the button
+      let errDiv = document.getElementById('formSubmitError');
+      if (!errDiv) {
+        errDiv = document.createElement('p');
+        errDiv.id = 'formSubmitError';
+        errDiv.style.cssText = 'color:#EF4444; font-size:0.875rem; margin-top:0.5rem; text-align:center;';
+        btn.insertAdjacentElement('afterend', errDiv);
+      }
+      errDiv.textContent = '⚠️ Could not send — please call us directly or try again.';
+      setTimeout(() => { if (errDiv) errDiv.textContent = ''; }, 5000);
+    }
   });
 
 });

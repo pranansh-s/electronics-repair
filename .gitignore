@@ -25,5 +25,5 @@ npm-debug.log*
 # Gemini / Agent files
 .gemini/
 
-# Old assets (replaced by SVG)
-logo.png
+# Old assets — keep logo.png (used as favicon fallback + schema image)
+# logo.png  ← intentionally tracked
