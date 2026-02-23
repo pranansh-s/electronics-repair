@@ -146,8 +146,15 @@ document.addEventListener('DOMContentLoaded', () => {
         statNumbers.forEach(countUp);
         obs.disconnect();
       }
-    }, { threshold: 0.3 }).observe(statsCard);
+    }, { threshold: 0.05 }).observe(statsCard);
   }
+
+  // --- Dynamic footer year ---
+  const currentYear = new Date().getFullYear();
+  const yearEl = document.getElementById('footer-year');
+  const yearEndEl = document.getElementById('footer-year-end');
+  if (yearEl) yearEl.textContent = currentYear;
+  if (yearEndEl) yearEndEl.textContent = currentYear + 1;
 
 
   // --- Contact form validation ---
